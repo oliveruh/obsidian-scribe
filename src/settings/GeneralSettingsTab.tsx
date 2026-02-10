@@ -9,6 +9,7 @@ import {
 } from './components/SettingsControl';
 import { SettingsItemHeader } from './components/SettingsItem';
 import useSettingsForm from './hooks/useSettingsForm';
+import TranscriptFormatSettings from './components/TranscriptFormatSettings';
 
 const languagesMapping = Object.entries(LanguageDisplayNames)
   .filter(([value]) => value !== LanguageOptions.auto)
@@ -62,7 +63,7 @@ function GeneralSettingsTab() {
       <SettingsSelect
         {...register('audioFileLanguage')}
         name="Spoken language"
-        description="The default spoken language for audio transcription, 
+        description="The default spoken language for audio transcription,
           changing from auto may increase accuracy"
         valuesMapping={languagesMapping}
       />
@@ -82,6 +83,8 @@ function GeneralSettingsTab() {
         description="If true, we will add a link to the Scribe in the frontmatter of the note.  This is useful for knowing which notes were created by Scribe."
         {...register('isFrontMatterLinkToScribe')}
       />
+
+      <TranscriptFormatSettings />
 
       <SettingsItemHeader name="Recordings" />
       <DirectorySelect

@@ -49,12 +49,17 @@ export interface ScribePluginSettings {
   isFrontMatterLinkToScribe: boolean;
   selectedAudioDeviceId: string;
   audioFileFormat: 'webm' | 'mp3';
+  // Transcript template
+  transcriptTemplate: string;
   // Custom OpenAI settings
   useCustomOpenAiBaseUrl: boolean;
   customOpenAiBaseUrl: string;
   customTranscriptModel: string;
   customChatModel: string;
 }
+
+export const DEFAULT_TRANSCRIPT_TEMPLATE = `{{audioPath}}
+{{transcript}}`;
 
 export const DEFAULT_SETTINGS: ScribePluginSettings = {
   assemblyAiApiKey: '',
@@ -78,6 +83,7 @@ export const DEFAULT_SETTINGS: ScribePluginSettings = {
   isFrontMatterLinkToScribe: true,
   selectedAudioDeviceId: '',
   audioFileFormat: 'webm',
+  transcriptTemplate: DEFAULT_TRANSCRIPT_TEMPLATE,
   // Custom OpenAI settings
   useCustomOpenAiBaseUrl: false,
   customOpenAiBaseUrl: '',

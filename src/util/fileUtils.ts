@@ -133,20 +133,22 @@ export async function appendTextToNote(
   noteFile: TFile,
   text: string,
   textToReplace?: string,
+  useLineBreak = true,
 ) {
   try {
+    const formattedText = `${useLineBreak ? '\n' : ''}${text}`;
     await plugin.app.vault.process(noteFile, (data) => {
       try {
         if (textToReplace) {
-          return data.replace(textToReplace, text);
+          return data.replace(textToReplace, formattedText);
         }
       } catch (error) {
         console.error('Failed to replace text', error);
         // Append anyway
-        return `${data}\n${text}`;
+        return `${data}${formattedText}`;
       }
 
-      return `${data.length && `${data}\n`}${text}`;
+      return `${data.length && String(data)}${formattedText}`;
     });
 
     return noteFile;

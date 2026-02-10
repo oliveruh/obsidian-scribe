@@ -15,6 +15,7 @@ import {
 import { transcribeAudioWithAssemblyAi } from './util/assemblyAiUtil';
 import type { LanguageOptions } from './util/consts';
 import { formatFilenamePrefix } from './util/filenameUtils';
+import { buildTranscriptText } from './util/transcriptFormatUtil';
 import {
   appendTextToNote,
   createNewNote,
@@ -327,25 +328,29 @@ export default class ScribePlugin extends Plugin {
       this.app.workspace.openLinkText(note?.path, currentPath, true);
     }
 
-    await appendTextToNote(this, note, '# Audio in progress');
+    const inProgressMarker = '<!-- scribe:in-progress -->';
+    await appendTextToNote(this, note, inProgressMarker, undefined, false);
 
+    const progressNotice = new Notice('Scribe: 🎧 Transcribing...');
     const transcript = await this.handleTranscription(
       audioRecordingBuffer,
       scribeOptions,
     );
+    progressNotice.hide();
 
-    const inProgressHeaderToReplace = isAppendToActiveFile
-      ? '# Audio in progress'
-      : '\n# Audio in progress';
+    const transcriptTextToAppendToNote = buildTranscriptText(
+      this.settings.transcriptTemplate,
+      transcript,
+      isSaveAudioFileActive,
+      audioRecordingFile.path,
+    );
 
-    const transcriptTextToAppendToNote = isSaveAudioFileActive
-      ? `# Audio\n![[${audioRecordingFile.path}]]\n${transcript}`
-      : `# Audio\n${transcript}`;
     await appendTextToNote(
       this,
       note,
       transcriptTextToAppendToNote,
-      inProgressHeaderToReplace,
+      inProgressMarker,
+      false,
     );
 
     if (isOnlyTranscribeActive) {
